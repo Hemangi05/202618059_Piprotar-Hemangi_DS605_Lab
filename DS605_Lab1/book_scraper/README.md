@@ -1,0 +1,4 @@
+Name: Piprotar Hemangi
+Student ID: 202618059
+
+This project was completed as part of the DS605: Fundamentals of Machine Learning course. The objective was to scrape book data from the Books to Scrape website using Scrapy, preprocess the data using Python and Pandas, and perform exploratory data analysis. The project includes data cleaning, feature engineering, visualizations, and a word cloud generated from book descriptions. The analysis provides insights into book prices, ratings, and categories through meaningful graphs and summary statistics. The repository contains the source code, raw and cleaned datasets, generated visualizations, and the Jupyter Notebook used for the analysis.
