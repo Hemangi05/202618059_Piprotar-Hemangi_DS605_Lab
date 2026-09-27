@@ -1,0 +1,26 @@
+{
+    "Sklearn Logistic Regression": {
+        "Accuracy": 0.7208333333333333,
+        "Precision": 0.7647058823529411,
+        "Recall": 0.8914285714285715,
+        "F1": 0.8232189973614775,
+        "Training Time": 0.024506399990059435,
+        "Prediction Time": 0.004866399918682873
+    },
+    "Manual Logistic Regression": {
+        "Accuracy": 0.75,
+        "Precision": 0.7860696517412935,
+        "Recall": 0.9028571428571428,
+        "F1": 0.8404255319148936,
+        "Training Time": 0.384199499967508,
+        "Prediction Time": 0.00014220003504306078
+    },
+    "Optimized Manual Logistic Regression": {
+        "Accuracy": 0.7291666666666666,
+        "Precision": 0.775,
+        "Recall": 0.8857142857142857,
+        "F1": 0.8266666666666667,
+        "Training Time": 0.19405719998758286,
+        "Prediction Time": 7.870001718401909e-05
+    }
+}

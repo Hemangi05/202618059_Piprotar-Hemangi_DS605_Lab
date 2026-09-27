@@ -1,0 +1,26 @@
+[
+    {
+        "Model": "Linear Regression",
+        "MAE": 0.1089679033925567,
+        "RMSE": 0.14597578427035596,
+        "R2": 0.26621914603589225,
+        "Accuracy": NaN,
+        "Precision": NaN,
+        "Recall": NaN,
+        "F1": NaN,
+        "Training Time": 0.022159299929626286,
+        "Prediction Time": 0.005800000042654574
+    },
+    {
+        "Model": "Logistic Regression",
+        "MAE": NaN,
+        "RMSE": NaN,
+        "R2": NaN,
+        "Accuracy": 0.7208333333333333,
+        "Precision": 0.7647058823529411,
+        "Recall": 0.8914285714285715,
+        "F1": 0.8232189973614775,
+        "Training Time": 0.024506399990059435,
+        "Prediction Time": 0.004866399918682873
+    }
+]
