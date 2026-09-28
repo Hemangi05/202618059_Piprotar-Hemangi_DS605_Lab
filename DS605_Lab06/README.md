@@ -1,7 +1,5 @@
 # DS605 Lab 6 - Feature Extraction and Machine Learning
 
-This lab focuses on feature extraction and traditional machine learning using image and text data.
-
 ## Dataset
 
 Two datasets were used:
