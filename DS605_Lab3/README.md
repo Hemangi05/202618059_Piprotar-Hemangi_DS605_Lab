@@ -1,49 +1,90 @@
+# DS605: Fundamentals of Machine Learning — Lab Assignment 3
 
-# Lab 3: Scikit-learn Data Preprocessing and Model Performance Evaluation
+## Scikit-learn: Data Preprocessing and Model Performance Evaluation
 
 **Name:** Piprotar Hemangi
-
 **Student ID:** 202618059
 
-**Dataset Link:** [Kaggle Hotel Booking Demand Dataset](https://www.kaggle.com/datasets/jessemostipak/hotel-booking-demand)
+---
+
+## Dataset
+
+- **Name:** Hotel Booking Demand
+- **Source:** [Kaggle – Hotel Booking Demand](https://www.kaggle.com/datasets/jessemostipak/hotel-booking-demand)
+- **File used:** `hotel_bookings.csv`
+- **Target variable:** `is_canceled` (binary classification — 0 = not canceled, 1 = canceled)
 
 ---
 
-## Preprocessing Choices
+## Project Structure
 
-* **Target & Data Leakage Removal:** The target variable selected is `is_canceled`. Columns such as `reservation_status` and `reservation_status_date` were dropped because they directly leak the final booking outcome.
-
-
-* **High Missingness Removal:** The `company` column was dropped due to missing over 94% of its values.
-
-
-* **Outlier Removal:** Cleaned extreme numerical anomalies in features like `adr` (e.g., negative values and values exceeding $5,000) using a strict IQR threshold.
-
-
-* **Imputation:** Applied `KNNImputer(n_neighbors=5)` for missing numerical features and `SimpleImputer(strategy="most_frequent")` for categorical features.
-
-
-* **Feature Scaling:** Evaluated two numerical scaling strategies within Scikit-learn pipelines: Pipeline A uses `StandardScaler()` while Pipeline B uses `MinMaxScaler()`.
-
-
-* **Categorical Encoding:** Applied `OneHotEncoder(handle_unknown="ignore")` to convert categorical variables into binary vectors.
-
-
-* **Data Splitting:** Data was split into 80% training and 20% testing sets using stratified sampling on `is_canceled` (`random_state=42`) to maintain class balance.
-
+```
+├── README.md
+├── 202618059_Lab03.ipynb
+├── hotel_bookings_cleaned.csv
+├── confusion_matrices.png
+└── outlier_boxplot.png
 
 
 ---
 
-## Final Observations
+## Part A – Data Loading and Preprocessing
 
-1. **Best Overall Result:** The Decision Tree classifier paired with either pipeline provided the best overall performance, achieving a higher testing accuracy and F1-score compared to Logistic Regression.
+### Task 1 – Data Understanding
+- Loaded `hotel_bookings.csv` and inspected it using `head()`, `shape`, `info()`, `describe()`, and `dtypes`.
+- Checked class distribution of `is_canceled` (target `y`).
+- Separated remaining columns into `X`, and identified numerical vs categorical feature types.
 
+### Task 2 – Missing Values, Leakage, and Outliers
+- Computed missing-value count and percentage per column.
+- **Dropped `company`** — 94% missing values. Imputing this column (even with KNN) would fabricate values for nearly the entire dataset and add no reliable signal.
+- Retained `agent` (~13.7% missing) but treated it as a categorical/ID-like feature rather than a continuous numeric one, since it represents booking agent codes, not a measurable quantity.
+- Removed `reservation_status` and `reservation_status_date` — these directly leak the final booking outcome (target leakage), since they are recorded *after* the booking is resolved.
+- Checked numerical features (e.g. `lead_time`, `adr`) for outliers using boxplots and the IQR method.
+- Removed extreme/clearly invalid outliers (e.g. `adr` negative or implausibly high values). **[X] rows removed** — *(update with your actual count)*.
 
-2. **StandardScaler vs. MinMaxScaler on Logistic Regression:** Scaling significantly impacts Logistic Regression performance compared to unscaled data; however, `StandardScaler` slightly outperformed `MinMaxScaler` in convergence and overall accuracy.
+### Task 3 – Preprocessing Pipelines
+- Split data using `train_test_split(test_size=0.2, stratify=y, random_state=42)` — same split reused for all four experiments.
+- **Numerical features:** `KNNImputer(n_neighbors=5)` for missing values.
+- **Categorical features:** `SimpleImputer(strategy="most_frequent")` + `OneHotEncoder(handle_unknown="ignore")`.
+- **Pipeline A:** KNNImputer + `StandardScaler` for numerical features.
+- **Pipeline B:** KNNImputer + `MinMaxScaler` for numerical features.
+- Built with `ColumnTransformer` + `Pipeline`, fitted only on training data to avoid leakage.
 
+---
 
-3. **Effect of Scaling on Decision Tree:** Feature scaling made no meaningful difference to the Decision Tree performance, as tree-based models split nodes based on feature value order rather than feature magnitude.
+## Part B – Model Training and Evaluation
 
+### Task 4 – Models Trained
+Four model–pipeline combinations were trained:
+1. Logistic Regression (`max_iter=1000`) + Pipeline A (StandardScaler)
+2. Logistic Regression (`max_iter=1000`) + Pipeline B (MinMaxScaler)
+3. Decision Tree (`random_state=42`) + Pipeline A (StandardScaler)
+4. Decision Tree (`random_state=42`) + Pipeline B (MinMaxScaler)
 
-4. **Overfitting Analysis:** The unconstrained Decision Tree model exhibited noticeable overfitting, achieving nearly 100% accuracy on the training set compared to a lower testing score. In contrast, Logistic Regression demonstrated minimal variance between training and testing metrics.
+### Task 5 – Results
+
+| Model | Train Accuracy | Test Accuracy | Precision | Recall | F1-Score |
+|---|---|---|---|---|---|
+| Logistic Regression + StandardScaler | 0.8191 | 0.8154 | 0.8031 | 0.6647 | 0.7274 |
+| Logistic Regression + MinMaxScaler   | 0.8151 | 0.8121 | 0.8018 | 0.6546 | 0.7208 |
+| Decision Tree + StandardScaler       | 0.9963 | 0.8592 | 0.8066 | 0.8155 | 0.8110 |
+| Decision Tree + MinMaxScaler         | 0.9963 | 0.8595 | 0.8070 | 0.8158 | 0.8114 |
+
+Confusion matrices for the best Logistic Regression (StandardScaler) and best Decision Tree (MinMaxScaler) are included in `confusion_matrices.png`.
+
+**Overfitting:**
+- Logistic Regression shows a negligible train–test gap (<1%), indicating good generalization.
+- Decision Tree shows a large train–test gap (~13.7%), a clear sign of overfitting — expected for an unconstrained tree with no `max_depth` or `min_samples_leaf` limits.
+
+---
+
+## Task 6 – Final Observations
+
+1. **Best overall combination:** Decision Tree + MinMaxScaler gives the best overall result (Test Accuracy ≈ 0.8595, F1 ≈ 0.8114), narrowly ahead of Decision Tree + StandardScaler, and clearly ahead of both Logistic Regression variants across all metrics.
+2. **Scaler effect on Logistic Regression:** StandardScaler slightly outperforms MinMaxScaler (Test Accuracy 0.8154 vs 0.8121, F1 0.7274 vs 0.7208), consistent with Logistic Regression's gradient-based optimizer converging better on standardized features.
+3. **Scaler effect on Decision Tree:** Scaling makes almost no difference (Test Accuracy 0.8592 vs 0.8595) — trees split on thresholds and are inherently scale-invariant.
+4. **Overfitting:** Logistic Regression generalizes well (train/test gap < 1%), while Decision Tree overfits significantly (train/test gap ≈ 13.7%) due to being trained without depth/leaf-size constraints.
+5. **Precision vs Recall trade-off:** Decision Tree achieves noticeably higher Recall than Logistic Regression (~0.815 vs ~0.65–0.66), catching more actual cancellations — useful for a hotel managing cancellation risk, despite its overfitting tendency.
+
+---
