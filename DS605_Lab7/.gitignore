@@ -1,0 +1,14 @@
+# Virtual environment
+.venv/
+
+# Dataset
+ORL_Dataset/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Jupyter temporary files
+.ipynb_checkpoints/
+
+
