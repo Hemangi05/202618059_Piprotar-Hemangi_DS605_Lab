@@ -3,20 +3,3 @@ venv/
 .venv/
 env/
 
-# Python cache files
-__pycache__/
-*.py[cod]
-
-# Jupyter Notebook checkpoints
-.ipynb_checkpoints/
-
-# Environment variables and secrets
-.env
-.env.*
-
-# IDE settings
-.vscode/
-
-# OS files
-.DS_Store
-Thumbs.db
